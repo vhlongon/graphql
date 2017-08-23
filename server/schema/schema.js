@@ -1,14 +1,22 @@
 const graphl = require('graphql');
+const fetch = require('node-fetch');
 
 const { GraphQLObjectType, GraphQLString, GraphQLInt, GraphQLSchema } = graphl;
 
-const users = [
-  { id: '1', firstName: 'Martin', age: 33 },
-  { id: '2', firstName: 'Louis', age: 20 }
-];
+const getUsers = async () => {
+  try {
+    const response = await fetch(`http://localhost:8084/users`);
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    return error;
+  }
+};
 
-const getUser = (collection, args) =>
-  collection.reduce((acc, user) => (user.id === args.id ? user : acc), {});
+const getUser = (args, prop, collection = getUsers()) =>
+  collection.then(users =>
+    users.reduce((acc, user) => (user[prop] === args[prop] ? user : acc), {})
+  );
 
 const UserType = new GraphQLObjectType({
   name: 'User',
@@ -26,7 +34,7 @@ const RootQuery = new GraphQLObjectType({
       type: UserType,
       args: { id: { type: GraphQLString } },
       resolve(parentValue, args) {
-        return getUser(users, args);
+        return getUser(args, 'id');
       }
     }
   }

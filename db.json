@@ -1,54 +1,81 @@
 {
   "users": [
     {
-      "id": "599db08318fc8bf8fdfc9ba9",
+      "id": "1",
       "firstName": "Kelly",
-      "age": 32
+      "age": 32,
+      "companyId": "1"
     },
     {
-      "id": "599db083740529a44c4747d7",
+      "id": "2",
       "firstName": "Kerry",
-      "age": 28
+      "age": 28,
+      "companyId": "1"
     },
     {
-      "id": "599db0831285ca7e4515959e",
+      "id": "3",
       "firstName": "Lester",
-      "age": 25
+      "age": 25,
+      "companyId": "2"
     },
     {
-      "id": "599db0836c5da32c9ddda538",
+      "id": "4",
       "firstName": "Erin",
-      "age": 23
+      "age": 23,
+      "companyId": "1"
     },
     {
-      "id": "599db083995ab1e1d5da326c",
+      "id": "5",
       "firstName": "Sheree",
-      "age": 29
+      "age": 29,
+      "companyId": "2"
     },
     {
-      "id": "599db083f1b64d52e9597225",
+      "id": "6",
       "firstName": "Johnson",
-      "age": 23
+      "age": 23,
+      "companyId": "2"
     },
     {
-      "id": "599db0839f912486b797811b",
+      "id": "7",
       "firstName": "Riggs",
-      "age": 28
+      "age": 28,
+      "companyId": "3"
     },
     {
-      "id": "599db0834df8b279e5d8ed02",
+      "id": "8",
       "firstName": "Robertson",
-      "age": 24
+      "age": 24,
+      "companyId": "1"
     },
     {
-      "id": "599db0836f3aaf1f404d8c60",
+      "id": "9",
       "firstName": "Daphne",
-      "age": 27
+      "age": 27,
+      "companyId": "3"
     },
     {
-      "id": "599db083f4d8dbca33d407e6",
+      "id": "10",
       "firstName": "Phoebe",
-      "age": 33
+      "age": 33,
+      "companyId": "2"
+    }
+  ],
+  "companies": [
+    {
+      "description": "Consequat veniam dolore aliqua irure aute.",
+      "name": "Zeam",
+      "id": "1"
+    },
+    {
+      "description": "Aliqua enim nostrud mollit excepteur deserunt aliquip irure veniam ad Lorem.",
+      "name": "Rodeomad",
+      "id": "2"
+    },
+    {
+      "description": "Minim mollit occaecat sunt ex cupidatat enim quis cillum enim nulla est irure magna ipsum.",
+      "name": "Konnect",
+      "id": "3"
     }
   ]
 }
