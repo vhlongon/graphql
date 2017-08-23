@@ -8,7 +8,7 @@
   "scripts": {
     "build": "babel client --out-dir dist/client --ignore **/__tests__/**",
     "build:server": "babel server --out-dir dist/server --ignore **/__tests__/**",
-    "serve": "yarn run build:server && nodemon dist/server/index.js",
+    "serve": "yarn run build:server && nodemon server/index.js",
     "dev": "NODE_ENV=development webpack-dev-server",
     "start": "yarn run serve & yarn run dev",
     "lint": "eslint --ext .jsx,.js client",

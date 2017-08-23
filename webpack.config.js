@@ -24,11 +24,12 @@ module.exports = {
       template: './client/index.html'
     }),
     new BrowserSyncPlugin({
-      // browse to http://localhost:3000/ during development,
-      // ./public directory is being served
       host: 'localhost',
       port: 8082,
       proxy: 'http://localhost:8081/',
+      ui: {
+        port: 8083
+      },
       files: [
         'dist/css/*.css',
         'dist/images/*.*',
