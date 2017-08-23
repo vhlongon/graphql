@@ -13,5 +13,5 @@ app.use(
 );
 
 app.listen('4000', () => {
-  console.log('listening on 4000, yey! ');
+  console.log('listening on http://localhost:4000');
 });

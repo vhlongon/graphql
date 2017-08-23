@@ -3,9 +3,12 @@ const graphl = require('graphql');
 const { GraphQLObjectType, GraphQLString, GraphQLInt, GraphQLSchema } = graphl;
 
 const users = [
-  { id: 1, firstName: 'Martin', age: 33 },
-  { id: 2, firstName: 'Louis', age: 20 }
+  { id: '1', firstName: 'Martin', age: 33 },
+  { id: '2', firstName: 'Louis', age: 20 }
 ];
+
+const getUser = (collection, args) =>
+  collection.reduce((acc, user) => (user.id === args.id ? user : acc), {});
 
 const UserType = new GraphQLObjectType({
   name: 'User',
@@ -23,7 +26,7 @@ const RootQuery = new GraphQLObjectType({
       type: UserType,
       args: { id: { type: GraphQLString } },
       resolve(parentValue, args) {
-        return users.filter(({ id }) => id === args.id);
+        return getUser(users, args);
       }
     }
   }
