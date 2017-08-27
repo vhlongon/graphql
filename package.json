@@ -10,7 +10,7 @@
     "build:server": "babel server --out-dir dist/server --ignore **/__tests__/**",
     "serve": "yarn run build:server && nodemon server/index.js",
     "dev": "NODE_ENV=development webpack-dev-server",
-    "start": "yarn run serve & yarn run dev",
+    "start": "yarn run json:server & yarn run serve & yarn run dev",
     "lint": "eslint --ext .jsx,.js client",
     "test": "jest",
     "test:watch": "yarn run lint && jest --watch",
@@ -27,6 +27,7 @@
     "babel-preset-react": "^6.24.1",
     "browser-sync": "^2.18.13",
     "browser-sync-webpack-plugin": "^1.2.0",
+    "css-loader": "^0.28.5",
     "enzyme": "^2.9.1",
     "eslint": "^4.4.1",
     "eslint-config-airbnb": "^15.1.0",
@@ -34,6 +35,7 @@
     "eslint-plugin-import": "^2.7.0",
     "eslint-plugin-jsx-a11y": "^5.1.1",
     "eslint-plugin-react": "^7.2.0",
+    "extract-text-webpack-plugin": "^3.0.0",
     "html-webpack-plugin": "^2.30.1",
     "jest": "^20.0.4",
     "json-server": "^0.12.0",
@@ -48,6 +50,8 @@
     "react-dom": "^15.6.1"
   },
   "dependencies": {
+    "chalk": "^2.1.0",
+    "emotion": "^7.2.0",
     "express": "^4.15.4",
     "express-graphql": "^0.6.7",
     "graphql": "^0.10.5",
@@ -55,17 +59,19 @@
     "node-fetch": "^1.7.2",
     "prop-types": "^15.5.10",
     "react": "^15.6.1",
-    "react-dom": "^15.6.1"
+    "react-dom": "^15.6.1",
+    "react-emotion": "^7.2.0"
   },
   "babel": {
+    "plugins": [
+      "emotion/babel",
+      "transform-object-rest-spread",
+      "transform-class-properties"
+    ],
     "presets": [
       "es2015",
       "es2017",
       "react"
-    ],
-    "plugins": [
-      "transform-object-rest-spread",
-      "transform-class-properties"
     ]
   }
 }

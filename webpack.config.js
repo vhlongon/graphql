@@ -3,6 +3,7 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const BrowserSyncPlugin = require('browser-sync-webpack-plugin');
 const pkg = require('./package').name;
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = {
   entry: './client/index.jsx',
@@ -22,6 +23,9 @@ module.exports = {
     new HtmlWebpackPlugin({
       filename: 'index.html',
       template: './client/index.html'
+    }),
+    new ExtractTextPlugin({
+      filename: '[name].css'
     }),
     new BrowserSyncPlugin({
       host: 'localhost',
@@ -50,6 +54,12 @@ module.exports = {
         test: /\.jsx?$/,
         loader: 'babel-loader',
         include: [path.join(__dirname, 'client')]
+      },
+      {
+        test: /\.css$/,
+        use: ExtractTextPlugin.extract({
+          use: ['css-loader']
+        })
       }
     ]
   }
