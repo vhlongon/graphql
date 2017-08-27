@@ -13,13 +13,7 @@ const getData = async path => {
   }
 };
 
-const getUsers = () => getData('http://localhost:8084/users');
-
-const getUser = (args, prop = 'id', collection = getUsers()) =>
-  collection.then(users =>
-    users.reduce((acc, user) => (user[prop] === args[prop] ? user : acc), {})
-  );
-
+const getUser = id => getData(`http://localhost:8084/users/${id}`);
 const getCompany = id => getData(`http://localhost:8084/companies/${id}`);
 
 const CompanyType = new GraphQLObjectType({
@@ -39,7 +33,7 @@ const UserType = new GraphQLObjectType({
     age: { type: GraphQLInt },
     company: {
       type: CompanyType,
-      resolve(parentValue, args) {
+      resolve(parentValue /* args */) {
         return getCompany(parentValue.companyId);
       }
     }
@@ -53,7 +47,14 @@ const RootQuery = new GraphQLObjectType({
       type: UserType,
       args: { id: { type: GraphQLString } },
       resolve(parentValue, args) {
-        return getUser(args);
+        return getUser(args.id);
+      }
+    },
+    company: {
+      type: CompanyType,
+      args: { id: { type: GraphQLString } },
+      resolve(parentValue, args) {
+        return getCompany(args.id);
       }
     }
   }
