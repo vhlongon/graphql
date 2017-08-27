@@ -3,27 +3,46 @@ const fetch = require('node-fetch');
 
 const { GraphQLObjectType, GraphQLString, GraphQLInt, GraphQLSchema } = graphl;
 
-const getUsers = async () => {
+const getData = async path => {
   try {
-    const response = await fetch(`http://localhost:8084/users`);
+    const response = await fetch(path);
     const data = await response.json();
     return data;
   } catch (error) {
-    return error;
+    return new Error(error);
   }
 };
 
-const getUser = (args, prop, collection = getUsers()) =>
+const getUsers = () => getData('http://localhost:8084/users');
+
+const getUser = (args, prop = 'id', collection = getUsers()) =>
   collection.then(users =>
     users.reduce((acc, user) => (user[prop] === args[prop] ? user : acc), {})
   );
+
+const getCompany = id => getData(`http://localhost:8084/companies/${id}`);
+
+const CompanyType = new GraphQLObjectType({
+  name: 'Company',
+  fields: {
+    id: { type: GraphQLString },
+    name: { type: GraphQLString },
+    description: { type: GraphQLString }
+  }
+});
 
 const UserType = new GraphQLObjectType({
   name: 'User',
   fields: {
     id: { type: GraphQLString },
     firstName: { type: GraphQLString },
-    age: { type: GraphQLInt }
+    age: { type: GraphQLInt },
+    company: {
+      type: CompanyType,
+      resolve(parentValue, args) {
+        return getCompany(parentValue.companyId);
+      }
+    }
   }
 });
 
@@ -34,7 +53,7 @@ const RootQuery = new GraphQLObjectType({
       type: UserType,
       args: { id: { type: GraphQLString } },
       resolve(parentValue, args) {
-        return getUser(args, 'id');
+        return getUser(args);
       }
     }
   }
