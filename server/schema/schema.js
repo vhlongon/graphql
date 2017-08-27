@@ -1,7 +1,13 @@
 const graphl = require('graphql');
 const fetch = require('node-fetch');
 
-const { GraphQLObjectType, GraphQLString, GraphQLInt, GraphQLSchema } = graphl;
+const {
+  GraphQLObjectType,
+  GraphQLString,
+  GraphQLInt,
+  GraphQLSchema,
+  GraphQLList
+} = graphl;
 
 const getData = async path => {
   try {
@@ -15,29 +21,37 @@ const getData = async path => {
 
 const getUser = id => getData(`http://localhost:8084/users/${id}`);
 const getCompany = id => getData(`http://localhost:8084/companies/${id}`);
-
-const CompanyType = new GraphQLObjectType({
-  name: 'Company',
-  fields: {
-    id: { type: GraphQLString },
-    name: { type: GraphQLString },
-    description: { type: GraphQLString }
-  }
-});
+const getUsersfromCompany = id =>
+  getData(`http://localhost:8084/companies/${id}/users`);
 
 const UserType = new GraphQLObjectType({
   name: 'User',
-  fields: {
+  fields: () => ({
     id: { type: GraphQLString },
     firstName: { type: GraphQLString },
     age: { type: GraphQLInt },
     company: {
-      type: CompanyType,
+      type: CompanyType, // eslint-disable-line no-use-before-define
       resolve(parentValue /* args */) {
         return getCompany(parentValue.companyId);
       }
     }
-  }
+  })
+});
+
+const CompanyType = new GraphQLObjectType({
+  name: 'Company',
+  fields: () => ({
+    id: { type: GraphQLString },
+    name: { type: GraphQLString },
+    description: { type: GraphQLString },
+    users: {
+      type: new GraphQLList(UserType),
+      resolve(parentValue /* args */) {
+        return getUsersfromCompany(parentValue.id);
+      }
+    }
+  })
 });
 
 const RootQuery = new GraphQLObjectType({
