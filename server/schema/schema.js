@@ -1,28 +1,20 @@
-const graphl = require('graphql');
-const fetch = require('node-fetch');
-
 const {
   GraphQLObjectType,
   GraphQLString,
   GraphQLInt,
   GraphQLSchema,
-  GraphQLList
-} = graphl;
+  GraphQLList,
+  GraphQLNonNull,
+} = require('graphql');
 
-const getData = async path => {
-  try {
-    const response = await fetch(path);
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    return new Error(error);
-  }
-};
-
-const getUser = id => getData(`http://localhost:8084/users/${id}`);
-const getCompany = id => getData(`http://localhost:8084/companies/${id}`);
-const getUsersfromCompany = id =>
-  getData(`http://localhost:8084/companies/${id}/users`);
+const {
+  getCompany,
+  getUser,
+  getUsersfromCompany,
+  addUser,
+  deleteUser,
+  editUser,
+} = require('./utils');
 
 const UserType = new GraphQLObjectType({
   name: 'User',
@@ -32,11 +24,11 @@ const UserType = new GraphQLObjectType({
     age: { type: GraphQLInt },
     company: {
       type: CompanyType, // eslint-disable-line no-use-before-define
-      resolve(parentValue /* args */) {
-        return getCompany(parentValue.companyId);
-      }
-    }
-  })
+      resolve({ companyId } /* , args */) {
+        return getCompany(companyId);
+      },
+    },
+  }),
 });
 
 const CompanyType = new GraphQLObjectType({
@@ -47,11 +39,11 @@ const CompanyType = new GraphQLObjectType({
     description: { type: GraphQLString },
     users: {
       type: new GraphQLList(UserType),
-      resolve(parentValue /* args */) {
+      resolve(parentValue /* , args */) {
         return getUsersfromCompany(parentValue.id);
-      }
-    }
-  })
+      },
+    },
+  }),
 });
 
 const RootQuery = new GraphQLObjectType({
@@ -60,20 +52,61 @@ const RootQuery = new GraphQLObjectType({
     user: {
       type: UserType,
       args: { id: { type: GraphQLString } },
-      resolve(parentValue, args) {
-        return getUser(args.id);
-      }
+      resolve(parentValue, { id }) {
+        return getUser(id);
+      },
     },
     company: {
       type: CompanyType,
       args: { id: { type: GraphQLString } },
+      resolve(parentValue, { id }) {
+        return getCompany(id);
+      },
+    },
+  },
+});
+
+// using GraphQLNonNull makes sure that an error is thrown in case the wrapped
+// props are not provided, in this case firstName and age
+const mutation = new GraphQLObjectType({
+  name: 'Mutation',
+  fields: {
+    addUser: {
+      type: UserType,
+      args: {
+        firstName: { type: new GraphQLNonNull(GraphQLString) },
+        age: { type: new GraphQLNonNull(GraphQLInt) },
+        companyId: { type: GraphQLString },
+      },
+      resolve(parentValue, { firstName, age }) {
+        return addUser({ firstName, age });
+      },
+    },
+    deleteUser: {
+      type: UserType,
+      args: {
+        id: { type: new GraphQLNonNull(GraphQLString) },
+      },
+      resolve(parentValue, { id }) {
+        return deleteUser(id);
+      },
+    },
+    editUser: {
+      type: UserType,
+      args: {
+        id: { type: new GraphQLNonNull(GraphQLString) },
+        firstName: { type: GraphQLString },
+        age: { type: GraphQLInt },
+        companyId: { type: GraphQLString },
+      },
       resolve(parentValue, args) {
-        return getCompany(args.id);
-      }
-    }
-  }
+        return editUser(args);
+      },
+    },
+  },
 });
 
 module.exports = new GraphQLSchema({
-  query: RootQuery
+  query: RootQuery,
+  mutation,
 });

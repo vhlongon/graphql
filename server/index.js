@@ -9,12 +9,10 @@ app.use(
   '/graphql',
   expressGraphQL({
     schema,
-    graphiql: true
+    graphiql: true,
   })
 );
 
 app.listen('4000', () => {
-  console.log(
-    chalk.bgWhite.bold.red('GraphQL server listening on http://localhost:4000')
-  );
+  console.log(chalk.bgWhite.bold.red('GraphQL http://localhost:4000/graphql'));
 });
