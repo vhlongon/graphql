@@ -7,9 +7,6 @@ const schema = {
   mutation,
 };
 
-const createSchema = obj => new GraphQLSchema(obj);
-
 module.exports = {
-  schema: createSchema(schema),
-  createSchema,
+  schema: new GraphQLSchema(schema),
 };
