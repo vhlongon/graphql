@@ -1,30 +1,44 @@
-const { GraphQLObjectType, GraphQLString } = require('graphql');
-const { UserType } = require('./types/user');
-const { CompanyType } = require('./types/company');
-const { getCompany, getUser } = require('./utils');
+const mongoose = require('mongoose');
+const {
+  GraphQLObjectType,
+  GraphQLList,
+  GraphQLID,
+  GraphQLNonNull,
+} = require('graphql');
+const SongType = require('./types/song-type');
+const LyricType = require('./types/lyric-type');
 
-const createRootQuery = (userGet = getUser, companyGet = getCompany) =>
+const Lyric = mongoose.model('lyric');
+const Song = mongoose.model('song');
+
+const createRootQuery = (song = Song, lyric = Lyric) =>
   new GraphQLObjectType({
     name: 'RootQueryType',
-    fields: {
-      user: {
-        type: UserType,
-        args: { id: { type: GraphQLString } },
-        resolve(parentValue, { id }) {
-          return userGet(id);
+    fields: () => ({
+      songs: {
+        type: new GraphQLList(SongType),
+        resolve() {
+          return song.find({});
         },
       },
-      company: {
-        type: CompanyType,
-        args: { id: { type: GraphQLString } },
+      song: {
+        type: SongType,
+        args: { id: { type: new GraphQLNonNull(GraphQLID) } },
         resolve(parentValue, { id }) {
-          return companyGet(id);
+          return song.findById(id);
         },
       },
-    },
+      lyric: {
+        type: LyricType,
+        args: { id: { type: new GraphQLNonNull(GraphQLID) } },
+        resolve(parnetValue, { id }) {
+          return lyric.findById(id);
+        },
+      },
+    }),
   });
 
 module.exports = {
-  RootQuery: createRootQuery(getUser, getCompany),
+  RootQuery: createRootQuery(),
   createRootQuery,
 };

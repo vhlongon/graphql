@@ -7,14 +7,11 @@
   "license": "MIT",
   "scripts": {
     "build": "babel client --out-dir dist/client --ignore **/__tests__/**",
-    "build:server": "babel server --out-dir dist/server --ignore **/__tests__/**",
-    "serve": "yarn run build:server && nodemon server/index.js",
-    "dev": "NODE_ENV=development webpack-dev-server",
-    "start": "yarn run json:server & yarn run serve & yarn run dev",
+    "dev": "nodemon index.js --ignore client",
+    "start": "yarn run build & yarn run dev",
     "lint": "eslint --ext .jsx,.js client",
     "test": "jest",
-    "test:watch": "yarn run lint && jest --watch",
-    "json:server": "json-server --watch db.json --port 8084"
+    "test:watch": "yarn run lint && jest --watch"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
@@ -42,7 +39,6 @@
     "nodemon": "^1.11.0",
     "prettier": "1.5.3",
     "react-test-renderer": "^15.6.1",
-    "webpack": "^3.5.5",
     "webpack-dev-server": "^2.7.1"
   },
   "peerDependencies": {
@@ -69,7 +65,9 @@
     "react-apollo": "^1.4.15",
     "react-dom": "^15.6.1",
     "react-emotion": "^7.2.0",
-    "react-router-dom": "^4.2.2"
+    "react-router-dom": "^4.2.2",
+    "webpack-dev-middleware": "^1.12.0",
+    "webpack": "^3.5.5"    
   },
   "babel": {
     "plugins": [
