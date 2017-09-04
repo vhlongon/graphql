@@ -12,7 +12,7 @@ const { db } = require('../config');
 
 const app = express();
 
-// Replace with your mongoLab URI
+// mongoLab URI
 const MONGO_URI = `mongodb://${db.user}:${db.password}@ds123124.mlab.com:23124/graphql-app`;
 if (!MONGO_URI) {
   throw new Error('You must provide a MongoLab URI');

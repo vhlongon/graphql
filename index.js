@@ -1,5 +1,5 @@
 const chalk = require('chalk');
-const app = require('./server/server');
+const app = require('./server');
 const { server } = require('./config');
 
 app.listen(server.port, () => {
