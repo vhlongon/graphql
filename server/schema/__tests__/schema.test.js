@@ -1,8 +1,6 @@
-import { schema } from '../schema';
+import schema from '../schema';
 import { RootQuery } from '../root-query';
-import mutation from '../mutation';
-import { UserType } from '../types/user';
-import { CompanyType } from '../types/company';
+import { mutations } from '../mutations';
 
 describe('Schema', () => {
   describe('root query', () => {
@@ -13,19 +11,7 @@ describe('Schema', () => {
 
   describe('mutation', () => {
     it('has the correct value', () => {
-      expect(schema.getMutationType()).toEqual(mutation);
-    });
-
-    describe('User', () => {
-      it('sets the correct value for User query', () => {
-        expect(schema.getTypeMap().User).toEqual(UserType);
-      });
-    });
-
-    describe('Company', () => {
-      it('sets the correct value for User query', () => {
-        expect(schema.getTypeMap().Company).toEqual(CompanyType);
-      });
+      expect(schema.getMutationType()).toEqual(mutations);
     });
   });
 });

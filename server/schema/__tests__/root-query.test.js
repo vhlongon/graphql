@@ -1,7 +1,7 @@
-import { GraphQLString } from 'graphql';
+import { GraphQLList, GraphQLID, GraphQLNonNull } from 'graphql';
 import { RootQuery, createRootQuery } from '../root-query';
-import { UserType } from '../types/user';
-import { CompanyType } from '../types/company';
+import { SongType } from '../types/song-type';
+import SongModel from '../../models/song';
 
 describe('RootQuery', () => {
   it('is set correct name', () => {
@@ -9,48 +9,48 @@ describe('RootQuery', () => {
   });
 
   describe('fields', () => {
-    describe('User', () => {
+    describe('songs', () => {
       it('has the correct type', () => {
-        const { user } = RootQuery.getFields();
-        expect(user.type).toEqual(UserType);
+        const { songs } = RootQuery.getFields();
+        expect(songs.type).toEqual(new GraphQLList(SongType));
       });
 
-      it('has an id arg', () => {
-        const { user } = RootQuery.getFields();
-        expect(user.args.find(a => a.name === 'id').type).toEqual(
-          GraphQLString
-        );
-      });
       describe('resolver', () => {
-        it('calls getUser', () => {
-          const getUser = jest.fn();
-          const { user } = createRootQuery(getUser).getFields();
-          const args = { id: 'id' };
-          user.resolve({}, args);
-          expect(getUser).toHaveBeenCalledWith(args.id);
+        it('calls Song.find', () => {
+          const mockFind = jest.fn();
+          const SongMockModel = SongModel;
+          SongMockModel.find = mockFind;
+          const { songs } = createRootQuery(SongMockModel).getFields();
+          songs.resolve({}, {});
+          expect(mockFind).toHaveBeenCalledWith({});
         });
       });
     });
 
-    describe('Company', () => {
+    describe('song', () => {
       it('has the correct type', () => {
-        const { company } = RootQuery.getFields();
-        expect(company.type).toEqual(CompanyType);
+        const { song } = RootQuery.getFields();
+        expect(song.type).toEqual(SongType);
       });
 
       it('has an id arg', () => {
-        const { company } = RootQuery.getFields();
-        expect(company.args.find(a => a.name === 'id').type).toEqual(
-          GraphQLString
+        const { song } = RootQuery.getFields();
+        expect(song.args.find(a => a.name === 'id').type).toEqual(
+          new GraphQLNonNull(GraphQLID)
         );
       });
       describe('resolver', () => {
-        it('calls getCompany', () => {
-          const getCompany = jest.fn();
-          const { user } = createRootQuery(getCompany).getFields();
+        it('calls Lyric.findById', () => {
+          const mockFindById = jest.fn();
+          const LyricMockModel = SongModel;
+          LyricMockModel.findById = mockFindById;
+          const { lyric } = createRootQuery(
+            SongModel,
+            LyricMockModel
+          ).getFields();
           const args = { id: 'id' };
-          user.resolve({}, args);
-          expect(getCompany).toHaveBeenCalledWith(args.id);
+          lyric.resolve({}, args);
+          expect(mockFindById).toHaveBeenCalledWith(args.id);
         });
       });
     });

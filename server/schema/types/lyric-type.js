@@ -1,25 +1,34 @@
-const mongoose = require('mongoose');
-const graphql = require('graphql');
+const {
+  GraphQLObjectType,
+  GraphQLID,
+  GraphQLInt,
+  GraphQLString,
+} = require('graphql');
 
-const { GraphQLObjectType, GraphQLID, GraphQLInt, GraphQLString } = graphql;
-const Lyric = mongoose.model('lyric');
+const LyricModel = require('../../models/lyric');
 
-module.exports = new GraphQLObjectType({
-  name: 'LyricType',
-  fields: () => ({
-    id: { type: GraphQLID },
-    likes: { type: GraphQLInt },
-    content: { type: GraphQLString },
-    song: {
-      type: SongType, // eslint-disable-line no-use-before-define
-      resolve(parentValue) {
-        return Lyric.findById(parentValue).populate('song').then(lyric => {
-          console.log(lyric);
-          return lyric.song;
-        });
+const createLyricType = (Lyric = LyricModel) =>
+  new GraphQLObjectType({
+    name: 'LyricType',
+    fields: () => ({
+      id: { type: GraphQLID },
+      likes: { type: GraphQLInt },
+      content: { type: GraphQLString },
+      song: {
+        type: SongType, // eslint-disable-line no-use-before-define
+        resolve(parentValue) {
+          const lyricFromSong = Lyric.findById(parentValue);
+          return lyricFromSong
+            ? lyricFromSong.populate('song').then(({ song }) => song)
+            : null;
+        },
       },
-    },
-  }),
-});
+    }),
+  });
 
-const SongType = require('./song-type');
+module.exports = {
+  LyricType: createLyricType(),
+  createLyricType,
+};
+
+const { SongType } = require('./song-type');

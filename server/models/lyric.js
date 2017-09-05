@@ -22,4 +22,6 @@ LyricSchema.statics.like = id => {
   });
 };
 
-mongoose.model('lyric', LyricSchema);
+const lyricSchema = mongoose.model('lyric', LyricSchema);
+
+module.exports = lyricSchema;
