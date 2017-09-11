@@ -55,6 +55,7 @@
     "express-graphql": "^0.6.7",
     "express-session": "^1.15.5",
     "graphql": "^0.10.5",
+    "graphql-tag": "^2.4.2",
     "lodash": "^4.17.4",
     "mongoose": "^4.11.10",
     "node-fetch": "^1.7.2",
@@ -66,8 +67,9 @@
     "react-dom": "^15.6.1",
     "react-emotion": "^7.2.0",
     "react-router-dom": "^4.2.2",
-    "webpack-dev-middleware": "^1.12.0",
-    "webpack": "^3.5.5"    
+    "recompose": "^0.25.0",
+    "webpack": "^3.5.5",
+    "webpack-dev-middleware": "^1.12.0"
   },
   "babel": {
     "plugins": [

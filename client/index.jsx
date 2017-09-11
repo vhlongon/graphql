@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './components/app';
+import Root from './components/root';
 import './style.css';
 
-ReactDOM.render(<App text="GraphQL app" />, document.getElementById('App'));
+ReactDOM.render(<Root />, document.getElementById('App'));

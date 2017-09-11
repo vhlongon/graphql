@@ -38,19 +38,19 @@ module.exports = {
     new ExtractTextPlugin({
       filename: '[name].css',
     }),
-    // new BrowserSyncPlugin({
-    //   host: 'localhost',
-    //   port: server.port,
-    //   proxy: `http://localhost:${server.port}/`,
-    //   ui: {
-    //     port: server.browserSyncUiPort,
-    //   },
-    //   files: [
-    //     'dist/css/*.css',
-    //     'dist/images/*.*',
-    //     '**/*.html',
-    //     '!node_modules/**/*.html',
-    //   ],
-    // }),
+    new BrowserSyncPlugin({
+      host: 'localhost',
+      port: server.port,
+      proxy: `http://localhost:${server.port}/`,
+      ui: {
+        port: server.browserSyncUiPort,
+      },
+      files: [
+        'dist/css/*.css',
+        'dist/images/*.*',
+        '**/*.html',
+        '!node_modules/**/*.html',
+      ],
+    }),
   ],
 };

@@ -6,6 +6,6 @@ describe('App', () => {
   it('renders component', () => {
     const text = 'text';
     const component = shallow(<App text={text} />);
-    expect(component.text()).toBe(text);
+    expect(component.find('h1').text()).toBe(text);
   });
 });
