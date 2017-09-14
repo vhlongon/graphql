@@ -15,6 +15,7 @@ const createMutations = (Song = SongModel, Lyric = LyricModel) =>
         },
         resolve(parentValue, { title }) {
           return new Song({ title }).save();
+          
         },
       },
       addLyricToSong: {

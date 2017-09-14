@@ -1,3 +1,4 @@
+const path = require('path');
 const express = require('express');
 const chalk = require('chalk');
 const models = require('./models'); // eslint-disable-line
@@ -29,6 +30,12 @@ mongoose.connection
   );
 
 app.use(bodyParser.json());
+app.get('*', (req, res) => {
+  res.sendFile(
+    path.resolve(`${path.dirname(require.main.filename)}/client/index.html`)
+  );
+});
+
 app.use(
   '/graphql',
   expressGraphQL({

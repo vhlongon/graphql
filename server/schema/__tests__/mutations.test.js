@@ -18,6 +18,7 @@ describe('mutations', () => {
       it('has the correct type', () => {
         const { addSong } = mutations.getFields();
         expect(addSong.type).toEqual(SongType);
+        
       });
 
       it('has an title arg', () => {
