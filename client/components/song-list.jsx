@@ -2,6 +2,7 @@ import React from 'react';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 import { compose } from 'recompose';
+import { Link } from 'react-router-dom';
 import { css } from 'emotion';
 import withLoader from './with-loader';
 
@@ -21,13 +22,16 @@ const listStyle = css`
 `;
 
 const SongList = ({ data }) =>
-  <ul className={listStyle}>
-    {data.songs.map(({ title, id }) =>
-      <li key={id}>
-        {title}
-      </li>
-    )}
-  </ul>;
+  <div>
+    <ul className={listStyle}>
+      {data.songs.map(({ title, id }) =>
+        <li key={id}>
+          {title}
+        </li>
+      )}
+    </ul>
+    <Link to="/songs/new">Add Song</Link>
+  </div>;
 
 SongList.defaultProps = {
   data: {

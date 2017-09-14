@@ -18,7 +18,7 @@ const Root = () =>
       <div>
         <Switch>
           <Route exact path="/" component={App} />
-          <Route path="/song/new" component={SongCreate} />
+          <Route path="/songs/new" component={SongCreate} />
         </Switch>
       </div>
     </Router>

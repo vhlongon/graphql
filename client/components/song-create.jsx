@@ -1,13 +1,8 @@
 import React from 'react';
-import {
-  withStateHandlers,
-  withState,
-  withHandlers,
-  withProps,
-  compose,
-} from 'recompose';
+import { withStateHandlers, withHandlers, compose } from 'recompose';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
+import { Link } from 'react-router-dom';
 
 const mutation = gql`
   mutation addSong($title: String) {
@@ -18,8 +13,9 @@ const mutation = gql`
   }
 `;
 
-const SongCreate = ({ title, updateTitle, onSubmit, mutate }) =>
+const SongCreate = ({ title, updateTitle, onSubmit }) =>
   <div>
+    <Link to="/">Back</Link>
     <h3>Create a new song</h3>
     <form onSubmit={onSubmit}>
       <div>
@@ -43,14 +39,21 @@ const enhance = compose(
     }
   ),
   withHandlers({
-    onSubmit: ({ title, mutate }) => e => {
+    onSubmit: props => e => {
+      const { title, mutate, history } = props;
       e.preventDefault();
       console.log('submitting form with title: ', title);
       mutate({
         variables: {
           title,
         },
-      });
+        refetchQueries: ['songs'],
+      })
+        .then(() => {
+          console.log('song added');
+          history.push('/');
+        })
+        .catch(error => console.error(error));
     },
   })
 );

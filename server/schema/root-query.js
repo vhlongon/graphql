@@ -18,6 +18,7 @@ const createRootQuery = (Song = SongModel, Lyric = LyricModel) =>
       songs: {
         type: new GraphQLList(SongType),
         resolve() {
+          console.log('fetching songs');
           return Song.find({});
         },
       },
