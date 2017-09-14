@@ -1,22 +1,24 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
-import AppolloClient from 'apollo-client';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import AppolloClient, { createNetworkInterface } from 'apollo-client';
 import { ApolloProvider } from 'react-apollo';
+import { gql } from '../../config';
 import App from './app';
+import SongCreate from './song-create';
 
-const client = new AppolloClient({});
+const client = new AppolloClient({
+  networkInterface: createNetworkInterface({
+    uri: `${gql.root}:${gql.port}${gql.path}`,
+  }),
+});
 
 const Root = () =>
   <ApolloProvider client={client}>
     <Router>
       <div>
-        <Link to="/banana">Go to Banana </Link>
         <Switch>
           <Route exact path="/" component={App} />
-          <Route
-            path="/banana"
-            component={() => <div>I am super banana</div>}
-          />
+          <Route path="/song/new" component={SongCreate} />
         </Switch>
       </div>
     </Router>

@@ -5,11 +5,9 @@ const models = require('./models'); // eslint-disable-line
 const expressGraphQL = require('express-graphql');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 const schema = require('./schema/schema');
-const webpackMiddleware = require('webpack-dev-middleware');
-const webpack = require('webpack');
-const webpackConfig = require('../webpack.config.js');
-const { db } = require('../config');
+const { db, server, gql } = require('../config');
 
 const app = express();
 
@@ -30,20 +28,30 @@ mongoose.connection
   );
 
 app.use(bodyParser.json());
-app.get('*', (req, res) => {
-  res.sendFile(
-    path.resolve(`${path.dirname(require.main.filename)}/client/index.html`)
-  );
-});
+// app.get('*', (req, res) => {
+//   res.sendFile(
+//     path.resolve(`${path.dirname(require.main.filename)}/dist/index.html`)
+//   );
+// });
 
+app.use(cors());
 app.use(
-  '/graphql',
+  gql.path,
   expressGraphQL({
     schema,
     graphiql: true,
   })
 );
 
-app.use(webpackMiddleware(webpack(webpackConfig)));
-
-module.exports = app;
+app.listen(gql.port, () => {
+  console.log(
+    chalk.bgWhite.bold.blue(
+      `GraphQL listening on: ${`${gql.root}:${gql.port}${gql.path}`}`
+    )
+  );
+  console.log(
+    chalk.bgWhite.bold.blue(
+      `GraphiQL enabled, running at: ${gql.root}:${gql.port}${gql.path}`
+    )
+  );
+});

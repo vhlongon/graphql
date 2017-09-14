@@ -1,32 +1,18 @@
+const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const BrowserSyncPlugin = require('browser-sync-webpack-plugin');
 const { server } = require('./config');
 
 module.exports = {
-  entry: './client/index.jsx',
+  devtool: 'source-map',
+  entry: ['whatwg-fetch', './client/index.jsx'],
   output: {
-    path: '/',
-    filename: 'bundle.js',
+    path: path.join(__dirname, 'dist'),
+    filename: 'index.js',
   },
   resolve: {
     extensions: ['.js', '.jsx'],
-  },
-  module: {
-    rules: [
-      {
-        use: 'babel-loader',
-        test: /\.jsx$/,
-        exclude: /node_modules/,
-      },
-      {
-        test: /\.css$/,
-        use: ExtractTextPlugin.extract({
-          use: ['css-loader'],
-        }),
-      },
-    ],
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
@@ -37,21 +23,27 @@ module.exports = {
     }),
     new ExtractTextPlugin({
       filename: '[name].css',
-      publicPath: '/public/',
     }),
-    // new BrowserSyncPlugin({
-    //   host: 'localhost',
-    //   port: server.port,
-    //   proxy: `http://localhost:${server.port}/`,
-    //   ui: {
-    //     port: server.browserSyncUiPort,
-    //   },
-    //   files: [
-    //     'dist/css/*.css',
-    //     'dist/images/*.*',
-    //     '**/*.html',
-    //     '!node_modules/**/*.html',
-    //   ],
-    // }),
   ],
+  devServer: {
+    contentBase: path.join(__dirname, 'client'),
+    historyApiFallback: true,
+    hot: true,
+    port: server.port,
+  },
+  module: {
+    rules: [
+      {
+        test: /\.jsx?$/,
+        loader: 'babel-loader',
+        include: [path.join(__dirname, 'client')],
+      },
+      {
+        test: /\.css$/,
+        use: ExtractTextPlugin.extract({
+          use: ['css-loader'],
+        }),
+      },
+    ],
+  },
 };
