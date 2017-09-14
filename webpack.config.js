@@ -9,6 +9,7 @@ module.exports = {
   entry: ['whatwg-fetch', './client/index.jsx'],
   output: {
     path: path.join(__dirname, 'dist'),
+    publicPath: '/',
     filename: 'index.js',
   },
   resolve: {
