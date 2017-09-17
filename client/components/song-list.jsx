@@ -1,33 +1,42 @@
 import React from 'react';
 import { graphql } from 'react-apollo';
-import gql from 'graphql-tag';
-import { compose } from 'recompose';
+import { withHandlers, compose } from 'recompose';
 import { Link } from 'react-router-dom';
 import { css } from 'emotion';
 import withLoader from './with-loader';
 import fetchSongs from '../queries/fetch-songs';
-
-const query = gql`
-  {
-    songs {
-      title
-      id
-    }
-  }
-`;
+import deleteSong from '../mutations/delete-song';
 
 const listStyle = css`
   text-align: center;
   list-style-type: none;
   padding-left: 0;
+  width: 400px;
+  maxWidth: 100%;
 `;
 
-const SongList = ({ data }) =>
+const listItemStyle = css`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+
+`;
+
+const titleStyle = css`
+  text-align: left;
+`;
+
+const SongList = ({ data, onSongDelete }) =>
   <div>
     <ul className={listStyle}>
       {data.songs.map(({ title, id }) =>
-        <li key={id}>
-          {title}
+        <li className={listItemStyle} key={id}>
+          <span className={titleStyle}>
+            {title}
+          </span>
+          <button data-id={id} onClick={onSongDelete(id)}>
+            delete
+          </button>
         </li>
       )}
     </ul>
@@ -41,7 +50,16 @@ SongList.defaultProps = {
 };
 
 const enhance = compose(
+  graphql(deleteSong),
   graphql(fetchSongs),
+  withHandlers({
+    onSongDelete: ({ mutate, data }) => id => e => {
+      e.preventDefault();
+      mutate({
+        variables: { id },
+      }).then(() => data.refetch());
+    },
+  }),
   withLoader(({ data }) => data && data.loading)
 );
 

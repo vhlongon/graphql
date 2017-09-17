@@ -1,18 +1,9 @@
 import React from 'react';
 import { withStateHandlers, withHandlers, compose } from 'recompose';
 import { graphql } from 'react-apollo';
-import gql from 'graphql-tag';
 import { Link } from 'react-router-dom';
 import fetchSongs from '../queries/fetch-songs';
-
-const mutation = gql`
-  mutation addSong($title: String) {
-    addSong(title: $title) {
-      id
-      title
-    }
-  }
-`;
+import addSong from '../mutations/add-song';
 
 const SongCreate = ({ title, updateTitle, onSubmit }) =>
   <div>
@@ -23,12 +14,12 @@ const SongCreate = ({ title, updateTitle, onSubmit }) =>
         <label htmlFor="title">Song Title:</label>
         <input onChange={updateTitle} value={title} name="title" />
       </div>
-      <input type="submit" value="hit me!" />
+      <input type="submit" value="Create song!" />
     </form>
   </div>;
 
 const enhance = compose(
-  graphql(mutation),
+  graphql(addSong),
   withStateHandlers(
     ({ title = '' }) => ({
       title,
