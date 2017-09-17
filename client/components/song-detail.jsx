@@ -27,7 +27,7 @@ const errorStyle = css`
   padding: 1em;
   color: darkred;
   border-radius: 2px;
-  background: rgba(255,0,0,0.05);
+  background: rgba(239, 195, 195, 0.5);
 `;
 
 const NoSong = ({ data }) =>
