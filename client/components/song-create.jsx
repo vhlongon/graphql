@@ -3,6 +3,7 @@ import { withStateHandlers, withHandlers, compose } from 'recompose';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 import { Link } from 'react-router-dom';
+import fetchSongs from '../queries/fetch-songs';
 
 const mutation = gql`
   mutation addSong($title: String) {
@@ -47,7 +48,7 @@ const enhance = compose(
         variables: {
           title,
         },
-        refetchQueries: ['songs'],
+        refetchQueries: [{ query: fetchSongs }],
       })
         .then(() => {
           console.log('song added');

@@ -5,6 +5,7 @@ import { compose } from 'recompose';
 import { Link } from 'react-router-dom';
 import { css } from 'emotion';
 import withLoader from './with-loader';
+import fetchSongs from '../queries/fetch-songs';
 
 const query = gql`
   {
@@ -40,7 +41,7 @@ SongList.defaultProps = {
 };
 
 const enhance = compose(
-  graphql(query),
+  graphql(fetchSongs),
   withLoader(({ data }) => data && data.loading)
 );
 

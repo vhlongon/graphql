@@ -1,4 +1,3 @@
-const path = require('path');
 const express = require('express');
 const chalk = require('chalk');
 const models = require('./models'); // eslint-disable-line
@@ -7,7 +6,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const schema = require('./schema/schema');
-const { db, server, gql } = require('../config');
+const { db, gql } = require('../config');
 
 const app = express();
 
@@ -18,14 +17,27 @@ if (!MONGO_URI) {
 }
 
 mongoose.Promise = global.Promise;
-mongoose.connect(MONGO_URI);
-mongoose.connection
+const mongoOptions = {
+  useMongoClient: true,
+  socketOptions: {
+    keepAlive: 300000,
+    connectTimeoutMS: 300000,
+  },
+};
+
+const connection = mongoose.connect(MONGO_URI, mongoOptions);
+connection
   .once('open', () =>
     console.log(chalk.bgWhite.bold.red('Connected to MongoLab instance.'))
   )
   .on('error', error =>
     console.log(chalk.bgRed.bold.white('Error connecting to MongoLab:', error))
-  );
+  )
+  .on('disconnected', () => {
+    // Reconnect on timeout
+    console.log(chalk.bgWhite.bold.red('Re-reconnecting to MongoLab.'));
+    mongoose.connect(MONGO_URI, mongoOptions);
+  });
 
 app.use(bodyParser.json());
 // app.get('*', (req, res) => {
