@@ -32,7 +32,9 @@ const SongList = ({ data, onSongDelete }) =>
       {data.songs.map(({ title, id }) =>
         <li className={listItemStyle} key={id}>
           <span className={titleStyle}>
-            {title}
+            <Link to={`/songs/${id}`}>
+              {title}
+            </Link>
           </span>
           <button data-id={id} onClick={onSongDelete(id)}>
             delete

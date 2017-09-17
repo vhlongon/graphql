@@ -5,6 +5,7 @@ import { ApolloProvider } from 'react-apollo';
 import { gql } from '../../config';
 import App from './app';
 import SongCreate from './song-create';
+import SongDetail from './song-detail';
 
 const client = new AppolloClient({
   networkInterface: createNetworkInterface({
@@ -19,6 +20,7 @@ const Root = () =>
         <Switch>
           <Route exact path="/" component={App} />
           <Route path="/songs/new" component={SongCreate} />
+          <Route path="/songs/:id" component={SongDetail} />
         </Switch>
       </div>
     </Router>
