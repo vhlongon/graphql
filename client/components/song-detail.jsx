@@ -4,27 +4,29 @@ import { renderComponent, branch, compose } from 'recompose';
 import { Link } from 'react-router-dom';
 import withLoader from './with-loader';
 import fetchSong from '../queries/fetch-song';
+import LyricList from './lyric-list';
 import LyricCreate from './lyric-create';
 import { errorStyle } from './error';
 
-const SongDetail = ({ data }) =>
+const SongDetail = ({ data: { song } }) =>
   <div>
     <Link to="/">Back</Link>
     <h3>
-      Details for: {data.song.title}
+      Details for: {song.title}
     </h3>
-    <LyricCreate songId={data.song.id} />
+    <LyricList lyrics={song.lyrics} />
+    <LyricCreate songId={song.id} />
     <h4>
-      Id: {data.song.id}
+      Id: {song.id}
     </h4>
   </div>;
 
-const NoSong = ({ data }) =>
+const NoSong = ({ data: { error } }) =>
   <div>
     <Link to="/">Back</Link>
     <h3>No Song found!</h3>
     <code className={errorStyle}>
-      {data.error.toString()}
+      {error && error.toString()}
     </code>
   </div>;
 

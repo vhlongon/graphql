@@ -9,6 +9,7 @@ const mutation = gql`
     addLyricToSong(content: $content, songId: $songId) {
       id
       lyrics {
+        id
         content
       }
     }
@@ -40,23 +41,18 @@ const enhance = compose(
     }
   ),
   withHandlers({
-    handleSubmit: ({
-      mutate,
-      lyricText,
-      songId,
-      updateLyricText,
-      updateError,
-    }) => e => {
+    handleSubmit: props => e => {
+      const { mutate, lyricText, songId, updateLyricText, updateError } = props;
       e.preventDefault();
       mutate({
         variables: {
           content: lyricText,
           songId,
         },
+        // refetchQueries: [{ query: fetchSong, variables: { id: songId } }],
       })
         .then(() => console.log('lyric created'))
         .catch(error => updateError(error));
-
       updateLyricText({ target: { value: '' } });
     },
   }),
