@@ -2,9 +2,10 @@ import React from 'react';
 import { graphql } from 'react-apollo';
 import { renderComponent, branch, compose } from 'recompose';
 import { Link } from 'react-router-dom';
-import { css } from 'emotion';
 import withLoader from './with-loader';
 import fetchSong from '../queries/fetch-song';
+import LyricCreate from './lyric-create';
+import { errorStyle } from './error';
 
 const SongDetail = ({ data }) =>
   <div>
@@ -12,23 +13,11 @@ const SongDetail = ({ data }) =>
     <h3>
       Details for: {data.song.title}
     </h3>
+    <LyricCreate songId={data.song.id} />
     <h4>
       Id: {data.song.id}
     </h4>
   </div>;
-
-const errorStyle = css`
-  overflow-wrap: break-word;
-  word-wrap: break-word;
-  hyphens: auto;
-  max-width: 400px;
-  display: block;
-  border: 1px solid red;
-  padding: 1em;
-  color: darkred;
-  border-radius: 2px;
-  background: rgba(239, 195, 195, 0.5);
-`;
 
 const NoSong = ({ data }) =>
   <div>

@@ -5,6 +5,7 @@ import { graphql } from 'react-apollo';
 import { Link } from 'react-router-dom';
 import fetchSongs from '../queries/fetch-songs';
 import addSong from '../mutations/add-song';
+import withError from './with-error';
 
 const validationStyle = css`
 border: 1px solid red;
@@ -34,9 +35,10 @@ const SongCreate = ({ title, updateTitle, onSubmit, validation }) =>
 const enhance = compose(
   graphql(addSong),
   withStateHandlers(
-    ({ title = '', validation = '' }) => ({
+    ({ title = '', validation = '', error = null }) => ({
       title,
       validation,
+      error,
     }),
     {
       updateValidation: () => text => ({
@@ -46,14 +48,16 @@ const enhance = compose(
         title: target.value,
         validation: '',
       }),
+      updateError: () => error => ({
+        error,
+      }),
     }
   ),
   withHandlers({
     onSubmit: props => e => {
-      const { title, mutate, history, updateValidation } = props;
+      const { title, mutate, history, updateValidation, updateError } = props;
       e.preventDefault();
       if (title) {
-        console.log('submitting form with title: ', title);
         mutate({
           variables: {
             title,
@@ -64,12 +68,13 @@ const enhance = compose(
             console.log('song added');
             history.push('/');
           })
-          .catch(error => console.error(error));
+          .catch(error => updateError(error));
       } else {
         updateValidation('Write a song title');
       }
     },
-  })
+  }),
+  withError(({ error }) => error)
 );
 
 export default enhance(SongCreate);

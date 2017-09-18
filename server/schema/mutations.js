@@ -1,4 +1,9 @@
-const { GraphQLObjectType, GraphQLString, GraphQLID } = require('graphql');
+const {
+  GraphQLObjectType,
+  GraphQLString,
+  GraphQLID,
+  GraphQLNonNull,
+} = require('graphql');
 const SongModel = require('../models/song');
 const LyricModel = require('../models/lyric');
 const { SongType } = require('./types/song-type');
@@ -11,11 +16,10 @@ const createMutations = (Song = SongModel, Lyric = LyricModel) =>
       addSong: {
         type: SongType,
         args: {
-          title: { type: GraphQLString },
+          title: { type: new GraphQLNonNull(GraphQLString) },
         },
         resolve(parentValue, { title }) {
           return new Song({ title }).save();
-          
         },
       },
       addLyricToSong: {

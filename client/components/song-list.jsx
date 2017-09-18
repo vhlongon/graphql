@@ -1,11 +1,12 @@
 import React from 'react';
 import { graphql } from 'react-apollo';
-import { withHandlers, compose } from 'recompose';
+import { withState, withHandlers, compose } from 'recompose';
 import { Link } from 'react-router-dom';
 import { css } from 'emotion';
 import withLoader from './with-loader';
 import fetchSongs from '../queries/fetch-songs';
 import deleteSong from '../mutations/delete-song';
+import withError from './with-error';
 
 const listStyle = css`
   text-align: center;
@@ -54,15 +55,19 @@ SongList.defaultProps = {
 const enhance = compose(
   graphql(deleteSong),
   graphql(fetchSongs),
+  withState('error', 'updateError', null),
   withHandlers({
-    onSongDelete: ({ mutate, data }) => id => e => {
+    onSongDelete: ({ mutate, data, updateError }) => id => e => {
       e.preventDefault();
       mutate({
         variables: { id },
-      }).then(() => data.refetch());
+      })
+        .then(() => data.refetch())
+        .catch(error => updateError(error));
     },
   }),
-  withLoader(({ data }) => data && data.loading)
+  withLoader(({ data }) => data && data.loading),
+  withError(({ error }) => error)
 );
 
 export default enhance(SongList);
