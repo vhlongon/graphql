@@ -1,11 +1,9 @@
 import React from 'react';
 import { graphql } from 'react-apollo';
 import { withState, withHandlers, compose } from 'recompose';
-import { Link } from 'react-router-dom';
 import { css } from 'emotion';
+import likeLyric from '../mutations/like-lyric';
 import withLoader from './with-loader';
-import fetchSongs from '../queries/fetch-songs';
-import deleteSong from '../mutations/delete-song';
 import withError from './with-error';
 
 const listStyle = css`
@@ -27,43 +25,50 @@ const titleStyle = css`
   text-align: left;
 `;
 
-const LyricList = ({ lyrics }) =>
+const likeStyle = css`
+  width: 65px;
+  & span {
+    margin-right: 5px;
+  }
+`;
+
+const LyricList = ({ lyrics, onLike }) =>
   <div>
     <ul className={listStyle}>
-      {lyrics.map(({ content, id }) =>
+      {lyrics.map(({ content, id, likes }) =>
         <li className={listItemStyle} key={id}>
           <span className={titleStyle}>
             {content}
           </span>
-          {/* <button data-id={id} onClick={onSongDelete(id)}>
-            delete
-</button> */}
+          <button className={likeStyle} onClick={onLike(id)}>
+            <span role="img" aria-label="thumbs-up">
+              👍🏽
+            </span>{' '}
+            {likes}
+          </button>
         </li>
       )}
     </ul>
   </div>;
 
-// LyricList.defaultProps = {
-//   data: {
-//     songs: [],
-//   },
-// };
+LyricList.defaultProps = {
+  lyrics: [],
+};
 
 const enhance = compose(
-  // graphql(deleteSong),
-  // graphql(fetchSongs),
-  // withState('error', 'updateError', null),
-  // withHandlers({
-  //   onSongDelete: ({ mutate, data, updateError }) => id => e => {
-  //     e.preventDefault();
-  //     mutate({
-  //       variables: { id },
-  //     })
-  //       .then(() => data.refetch())
-  //       .catch(error => updateError(error));
-  //   },
-  // }),
-  // withLoader(({ data }) => data && data.loading),
+  graphql(likeLyric),
+  withState('error', 'updateError', null),
+  withHandlers({
+    onLike: ({ mutate, updateError }) => id => e => {
+      e.preventDefault();
+      mutate({
+        variables: { id },
+      })
+        .then(() => console.log('liked'))
+        .catch(error => updateError(error));
+    },
+  }),
+  withLoader(({ data }) => data && data.loading),
   withError(({ error }) => error)
 );
 

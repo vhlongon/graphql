@@ -1,20 +1,8 @@
 import React from 'react';
 import { withStateHandlers, withHandlers, compose } from 'recompose';
 import { graphql } from 'react-apollo';
-import gql from 'graphql-tag';
+import addLyric from '../mutations/add-lyric';
 import withError from './with-error';
-
-const mutation = gql`
-  mutation addLyricToSong($content: String, $songId: ID) {
-    addLyricToSong(content: $content, songId: $songId) {
-      id
-      lyrics {
-        id
-        content
-      }
-    }
-  }
-`;
 
 const LyricCreate = ({ lyricText, updateLyricText, handleSubmit }) =>
   <form onSubmit={handleSubmit}>
@@ -28,7 +16,7 @@ const LyricCreate = ({ lyricText, updateLyricText, handleSubmit }) =>
   </form>;
 
 const enhance = compose(
-  graphql(mutation),
+  graphql(addLyric),
   withStateHandlers(
     ({ lyricText = '', error = null }) => ({ lyricText, error }),
     {
@@ -49,7 +37,6 @@ const enhance = compose(
           content: lyricText,
           songId,
         },
-        // refetchQueries: [{ query: fetchSong, variables: { id: songId } }],
       })
         .then(() => console.log('lyric created'))
         .catch(error => updateError(error));

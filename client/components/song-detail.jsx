@@ -21,12 +21,12 @@ const SongDetail = ({ data: { song } }) =>
     </h4>
   </div>;
 
-const NoSong = ({ data: { error } }) =>
+const NoSong = ({ data }) =>
   <div>
     <Link to="/">Back</Link>
     <h3>No Song found!</h3>
     <code className={errorStyle}>
-      {error && error.toString()}
+      {data.error && data.error.toString()}
     </code>
   </div>;
 
