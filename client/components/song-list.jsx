@@ -3,6 +3,7 @@ import { graphql } from 'react-apollo';
 import { withState, withHandlers, compose } from 'recompose';
 import { Link } from 'react-router-dom';
 import { css } from 'emotion';
+import Song from './song';
 import withLoader from './with-loader';
 import fetchSongs from '../queries/fetch-songs';
 import deleteSong from '../mutations/delete-song';
@@ -16,17 +17,6 @@ const listStyle = css`
   maxWidth: 100%;
 `;
 
-const listItemStyle = css`
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-
-`;
-
-const titleStyle = css`
-  text-align: left;
-`;
-
 const addSongStyle = css`
   color: white;
   font-weight: bold;
@@ -35,16 +25,7 @@ const addSongStyle = css`
 const SongList = ({ data, onSongDelete }) =>
   <div>
     <ul className={listStyle}>
-      {data.songs.map(({ title, id }) =>
-        <li className={listItemStyle} key={id}>
-          <span className={titleStyle}>
-            <Link to={`/songs/${id}`}>
-              {title}
-            </Link>
-          </span>
-          <button onClick={onSongDelete(id)}>delete</button>
-        </li>,
-      )}
+      {data.songs.map(Song(onSongDelete))}
     </ul>
     <Link to="/songs/new">
       <span className={addSongStyle} role="img" aria-label="add song">
