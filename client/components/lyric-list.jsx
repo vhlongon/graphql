@@ -40,13 +40,13 @@ const LyricList = ({ lyrics, onLike }) =>
           <span className={titleStyle}>
             {content}
           </span>
-          <button className={likeStyle} onClick={onLike(id)}>
+          <button className={likeStyle} onClick={onLike(id, likes)}>
             <span role="img" aria-label="thumbs-up">
               👍🏽
             </span>{' '}
             {likes}
           </button>
-        </li>
+        </li>,
       )}
     </ul>
   </div>;
@@ -59,17 +59,29 @@ const enhance = compose(
   graphql(likeLyric),
   withState('error', 'updateError', null),
   withHandlers({
-    onLike: ({ mutate, updateError }) => id => e => {
+    onLike: ({ mutate, updateError }) => (id, likes) => e => {
       e.preventDefault();
       mutate({
         variables: { id },
+        // this makes sure we get a response right away instead of waiting an instance
+        // to get it back from the server, the best way to make sure the following properties are correct
+        // is by looking at the network tab on devtools and copy the body of the mutation request from there
+        // what we are essentially doing is copying the mutation
+        optimisticResponse: {
+          __typename: 'Mutation',
+          likeLyric: {
+            id,
+            __typename: 'LyricType',
+            likes: likes + 1,
+          },
+        },
       })
         .then(() => console.log('liked'))
         .catch(error => updateError(error));
     },
   }),
   withLoader(({ data }) => data && data.loading),
-  withError(({ error }) => error)
+  withError(({ error }) => error),
 );
 
 export default enhance(LyricList);
