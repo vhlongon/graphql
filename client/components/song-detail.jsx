@@ -8,22 +8,26 @@ import LyricList from './lyric-list';
 import LyricCreate from './lyric-create';
 import { errorStyle } from './error';
 
-const SongDetail = ({ data: { song } }) =>
-  <div>
-    <Link to="/">Back</Link>
-    <h3>
-      Details for: {song.title}
-    </h3>
-    <LyricList lyrics={song.lyrics} />
-    <LyricCreate songId={song.id} />
-    <h4>
-      Id: {song.id}
-    </h4>
-  </div>;
+const SongDetail = ({ data }) => {
+  const { song, refetch } = data;
+  return (
+    <div style={{ position: 'relative' }}>
+      <Link to="/">← Back</Link>
+      <h3>
+        Details for: {song.title}
+      </h3>
+      <small>
+        Id: {song.id}
+      </small>
+      <LyricList refetchData={refetch} lyrics={song.lyrics} />
+      <LyricCreate songId={song.id} />
+    </div>
+  );
+};
 
 const NoSong = ({ data }) =>
   <div>
-    <Link to="/">Back</Link>
+    <Link to="/">← Back</Link>
     <h3>No Song found!</h3>
     <code className={errorStyle}>
       {data.error && data.error.toString()}
@@ -38,6 +42,6 @@ const enhance = compose(
     options: ({ match }) => ({ variables: { id: match.params.id } }),
   }),
   withLoader(({ data }) => data && data.loading),
-  withNoSong(({ data }) => data && !data.song)
+  withNoSong(({ data }) => data && !data.song),
 );
 export default enhance(SongDetail);

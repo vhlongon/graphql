@@ -1,9 +1,8 @@
 import gql from 'graphql-tag';
 
 const deleteSong = gql`
-  mutation deleteSong($id: ID) {
-    deleteSong(id: $id) {
-      title
+  mutation deleteLyric($id: ID) {
+    deleteLyric(id: $id) {
       id
     }
   }

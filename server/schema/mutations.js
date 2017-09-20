@@ -46,6 +46,13 @@ const createMutations = (Song = SongModel, Lyric = LyricModel) =>
           return Song.remove({ _id: id });
         },
       },
+      deleteLyric: {
+        type: LyricType,
+        args: { id: { type: GraphQLID } },
+        resolve(parentValue, { id }) {
+          return Lyric.remove({ _id: id });
+        },
+      },
     },
   });
 

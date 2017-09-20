@@ -27,6 +27,11 @@ const titleStyle = css`
   text-align: left;
 `;
 
+const addSongStyle = css`
+  color: white;
+  font-weight: bold;
+`;
+
 const SongList = ({ data, onSongDelete }) =>
   <div>
     <ul className={listStyle}>
@@ -37,13 +42,15 @@ const SongList = ({ data, onSongDelete }) =>
               {title}
             </Link>
           </span>
-          <button data-id={id} onClick={onSongDelete(id)}>
-            delete
-          </button>
-        </li>
+          <button onClick={onSongDelete(id)}>delete</button>
+        </li>,
       )}
     </ul>
-    <Link to="/songs/new">Add Song</Link>
+    <Link to="/songs/new">
+      <span className={addSongStyle} role="img" aria-label="add song">
+        🎶 Add Song 🎶
+      </span>
+    </Link>
   </div>;
 
 SongList.defaultProps = {
@@ -67,7 +74,7 @@ const enhance = compose(
     },
   }),
   withLoader(({ data }) => data && data.loading),
-  withError(({ error }) => error)
+  withError(({ error }) => error),
 );
 
 export default enhance(SongList);

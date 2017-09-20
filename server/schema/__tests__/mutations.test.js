@@ -18,13 +18,12 @@ describe('mutations', () => {
       it('has the correct type', () => {
         const { addSong } = mutations.getFields();
         expect(addSong.type).toEqual(SongType);
-        
       });
 
       it('has an title arg', () => {
         const { addSong } = mutations.getFields();
         expect(addSong.args.find(a => a.name === 'title').type).toEqual(
-          GraphQLString
+          new GraphQLNonNull(GraphQLString),
         );
       });
 
@@ -52,14 +51,14 @@ describe('mutations', () => {
       it('has a content arg', () => {
         const { addLyricToSong } = mutations.getFields();
         expect(
-          addLyricToSong.args.find(a => a.name === 'content').type
+          addLyricToSong.args.find(a => a.name === 'content').type,
         ).toEqual(GraphQLString);
       });
 
       it('has a songId arg', () => {
         const { addLyricToSong } = mutations.getFields();
         expect(addLyricToSong.args.find(a => a.name === 'songId').type).toEqual(
-          GraphQLID
+          GraphQLID,
         );
       });
 
@@ -85,7 +84,7 @@ describe('mutations', () => {
       it('has a content arg', () => {
         const { likeLyric } = mutations.getFields();
         expect(likeLyric.args.find(a => a.name === 'id').type).toEqual(
-          GraphQLID
+          GraphQLID,
         );
       });
 
@@ -96,7 +95,7 @@ describe('mutations', () => {
           LyricModelMock.like = likeMock;
           const { likeLyric } = createMutations(
             SongModel,
-            LyricModelMock
+            LyricModelMock,
           ).getFields();
           const args = { id: 'id' };
           likeLyric.resolve({}, args);
@@ -114,7 +113,7 @@ describe('mutations', () => {
       it('has a content arg', () => {
         const { deleteSong } = mutations.getFields();
         expect(deleteSong.args.find(a => a.name === 'id').type).toEqual(
-          GraphQLID
+          GraphQLID,
         );
       });
 

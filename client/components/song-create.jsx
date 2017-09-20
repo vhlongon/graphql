@@ -1,48 +1,61 @@
 import React from 'react';
 import { withStateHandlers, withHandlers, compose } from 'recompose';
-import { css } from 'emotion';
 import { graphql } from 'react-apollo';
 import { Link } from 'react-router-dom';
+import { css } from 'emotion';
 import fetchSongs from '../queries/fetch-songs';
 import addSong from '../mutations/add-song';
 import withError from './with-error';
+import Validation from './validation';
 
-const validationStyle = css`
-border: 1px solid red;
-padding: .25em .5em;
-margin: .5em 0;
-color: darkred;
-border-radius: 2px;
-background: rgba(239, 195, 195, 0.5);`;
+const containerStyle = css`
+  min-width: 320px;
+  width: 100%;
+`;
 
-const SongCreate = ({ title, updateTitle, onSubmit, validation }) =>
-  <div>
-    <Link to="/">Back</Link>
+const inputContainerStyle = css`
+display: flex;
+justify-content: space-between;
+& input {
+  flex-grow: 2;
+  margin-left: 20px;
+}
+`;
+
+const submitContainer = css`
+width: 100%;
+display: flex;
+justify-content: center;
+margin-top: 10px;
+`;
+
+const SongCreate = ({ title, updateTitle, onSubmit, validationText }) =>
+  <div className={containerStyle}>
+    <Link to="/">← Back</Link>
     <h3>Create a new song</h3>
     <form onSubmit={onSubmit}>
-      <div>
+      <div className={inputContainerStyle}>
         <label htmlFor="title">Song Title:</label>
         <input onChange={updateTitle} value={title} name="title" />
-        {validation &&
-          <div className={validationStyle}>
-            {validation}
-          </div>}
+        {validationText && <Validation text={validationText} />}
       </div>
-      <input type="submit" value="Create song!" />
+      <div className={submitContainer}>
+        <input type="submit" value="Create song!" />
+      </div>
     </form>
   </div>;
 
 const enhance = compose(
   graphql(addSong),
   withStateHandlers(
-    ({ title = '', validation = '', error = null }) => ({
+    ({ title = '', validationText = '', error = null }) => ({
       title,
-      validation,
+      validationText,
       error,
     }),
     {
-      updateValidation: () => text => ({
-        validation: text,
+      updateValidationText: () => text => ({
+        validationText: text,
       }),
       updateTitle: () => ({ target }) => ({
         title: target.value,
@@ -51,11 +64,17 @@ const enhance = compose(
       updateError: () => error => ({
         error,
       }),
-    }
+    },
   ),
   withHandlers({
     onSubmit: props => e => {
-      const { title, mutate, history, updateValidation, updateError } = props;
+      const {
+        title,
+        mutate,
+        history,
+        updateValidationText,
+        updateError,
+      } = props;
       e.preventDefault();
       if (title) {
         mutate({
@@ -70,11 +89,11 @@ const enhance = compose(
           })
           .catch(error => updateError(error));
       } else {
-        updateValidation('Write a song title');
+        updateValidationText('Write a song title');
       }
     },
   }),
-  withError(({ error }) => error)
+  withError(({ error }) => error),
 );
 
 export default enhance(SongCreate);
