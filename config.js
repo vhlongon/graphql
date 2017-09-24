@@ -1,4 +1,4 @@
-const { user, password } = require('./secret');
+const { user, password, encryptSecret } = require('./secret');
 
 module.exports = {
   server: {
@@ -10,6 +10,7 @@ module.exports = {
     user,
     password,
   },
+  encryptSecret,
   gql: {
     port: 4000,
     path: '/graphql',
