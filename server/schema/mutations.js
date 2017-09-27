@@ -19,6 +19,18 @@ const mutation = new GraphQLObjectType({
         return authService.signup({ email, password, req });
       },
     },
+    logout: {
+      type: UserType,
+      resolve(parentValue, args, req) {
+        // this is returned from passport in the section,
+        // make sure to save a reference to the current user
+        // before attempting to log out, to be able to return the user
+        // from this mutation
+        const { user } = req;
+        req.logout();
+        return user;
+      },
+    },
   },
 });
 
