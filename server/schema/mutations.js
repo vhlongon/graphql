@@ -31,6 +31,19 @@ const mutation = new GraphQLObjectType({
         return user;
       },
     },
+    login: {
+      type: UserType,
+      args: {
+        email: { type: GraphQLString },
+        password: { type: GraphQLString },
+      },
+      resolve(parentValue, args, req /* also called 'context' */) {
+        const { email, password } = args;
+        // the signup service signup returns a promise, so make sure to return it ,
+        // so graphql knows to wait and handle it
+        return authService.login({ email, password, req });
+      },
+    },
   },
 });
 
