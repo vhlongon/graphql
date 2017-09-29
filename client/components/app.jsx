@@ -1,9 +1,9 @@
 import React from 'react';
 
-const App = ({ text }) =>
+const App = ({ title }) =>
   <div className="app">
     <h1 style={{ fontSize: '2em' }}>
-      {text}
+      {title}
     </h1>
   </div>;
 
