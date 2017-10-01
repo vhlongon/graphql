@@ -5,6 +5,6 @@ import Loader from '../loader';
 describe('Loader', () => {
   it('get the correct class', () => {
     const wrapper = shallow(<Loader />);
-    expect(wrapper.hasClass('loader')).toBeTruthy();
+    expect(wrapper.find('loader')).toBeTruthy();
   });
 });

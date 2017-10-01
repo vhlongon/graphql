@@ -39,6 +39,13 @@ connection
     mongoose.connect(MONGO_URI, mongoOptions);
   });
 
+app.use(
+  cors({
+    origin: 'http://localhost:3000',
+    credentials: true,
+  }),
+);
+
 // Configures express to use sessions.  This places an encrypted identifier
 // on the users cookie.  When a user makes a request, this middleware examines
 // the cookie and modifies the request object to indicate which user made the request
@@ -55,8 +62,6 @@ app.use(
     }),
   }),
 );
-
-app.use(cors());
 
 // Passport is wired into express as a middleware. When a request comes in,
 // Passport will examine the request's session (as set by the above config) and

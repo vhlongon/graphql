@@ -1,10 +1,13 @@
+.loader__box {
+  height: 5em;
+}
 .loader,
 .loader:before,
 .loader:after {
   background: #fff;
-  animation: load1 1s infinite ease-in-out;
+  animation: movingBars 1s infinite ease-in-out;
   width: 1em;
-  height: 4em;
+  height: 5em;
 }
 .loader {
   color: fff;
@@ -28,7 +31,7 @@
 .loader:after {
   left: 1.5em;
 }
-@keyframes load1 {
+@keyframes movingBars {
   0%,
   80%,
   100% {

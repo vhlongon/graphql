@@ -7,4 +7,8 @@ const App = ({ title }) =>
     </h1>
   </div>;
 
+App.defaultProps = {
+  title: 'Graphql authentication',
+};
+
 export default App;

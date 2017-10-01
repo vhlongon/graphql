@@ -28,7 +28,7 @@ const Error = ({ error }) =>
   <div className={containerStyle}>
     <p>Something went wrong!</p>
     <code className={classnames(errorStyle)}>
-      {error.toString()}
+      {error ? error.toString() : 'Something went wrong'}
     </code>
   </div>;
 
