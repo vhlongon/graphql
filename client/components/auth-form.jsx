@@ -1,5 +1,6 @@
 import React from 'react';
 import { withStateHandlers, withHandlers, compose } from 'recompose';
+import withError from './with-error';
 
 const AuthForm = ({
   email,
@@ -55,6 +56,7 @@ const enhance = compose(
       onSubmit({ email, password });
     },
   }),
+  withError(({ error }) => error),
 );
 
 export default enhance(AuthForm);
