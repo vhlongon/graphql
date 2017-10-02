@@ -1,9 +1,9 @@
 import React from 'react';
-import { compose, withStateHandlers, withHandlers, lifecycle } from 'recompose';
+import { compose, withStateHandlers, withHandlers } from 'recompose';
 import { css } from 'emotion';
 import { graphql } from 'react-apollo';
 import AuthForm from './auth-form';
-import loginMutation from '../mutations/login';
+import signupMutation from '../mutations/signup';
 import currentUserQuery from '../queries/current-user';
 
 const getErrorMessages = error => error.message;
@@ -21,20 +21,20 @@ position: relative;
 z-index: 2;
 `;
 
-const LoginForm = ({ mutate, setError, error, resetError }) =>
+const SignupForm = ({ mutate, setError, error, resetError }) =>
   <div className={formContainerStyle}>
     {error &&
       <button className={closeButtonStyle} onClick={resetError}>
         close error
       </button>}
     <AuthForm
-      title="Login Form"
+      title="Signup Form"
       error={error}
       onSubmit={({ email, password }) => {
         mutate({
           variables: { email, password },
           refetchQueries: [{ query: currentUserQuery }],
-        }).catch(({ graphQLErrors }) =>
+        }).catch(({ graphQLErrors = [] }) =>
           setError(graphQLErrors.map(getErrorMessages)),
         );
       }}
@@ -42,8 +42,7 @@ const LoginForm = ({ mutate, setError, error, resetError }) =>
   </div>;
 
 export default compose(
-  graphql(loginMutation),
-  graphql(currentUserQuery),
+  graphql(signupMutation),
   withStateHandlers(({ error = null }) => ({ error }), {
     setError: () => error => ({ error }),
   }),
@@ -52,18 +51,4 @@ export default compose(
       setError(null);
     },
   }),
-  // in order to avoid race conditions when decide to redirect the user to
-  // dashboard route when case they are authenticated we need to use this lifecycle method
-  // since we have hooked the component with the currentUser query everytime that the query is run
-  // all components associated with it will rerender.
-  // we couldnt simply do that using .then on the mutating because we would be redirect back and forth
-  // from dashboard and login form ( because of how Apollo resolves the queries and mutations)
-  lifecycle({
-    componentWillUpdate(nextProps) {
-      const { history, data: { user } } = this.props;
-      if (!user && nextProps.data.user) {
-        history.push('/dashboard');
-      }
-    },
-  }),
-)(LoginForm);
+)(SignupForm);

@@ -6,6 +6,8 @@ import { gql } from '../../config';
 import App from './app';
 import Header from './header';
 import LoginForm from './login-form';
+import SignupForm from './signup-form';
+import Dashboard from './dashboard';
 
 const networkInterface = createNetworkInterface({
   // this takes every piece of data and runs through this function,
@@ -34,6 +36,8 @@ const Root = () =>
         <Switch>
           <Route exact path="/" component={App} />
           <Route path="/login" component={LoginForm} />
+          <Route path="/signup" component={SignupForm} />
+          <Route path="/dashboard" component={Dashboard} />
         </Switch>
       </div>
     </Router>

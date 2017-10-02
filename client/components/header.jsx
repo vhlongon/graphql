@@ -1,6 +1,6 @@
 import React from 'react';
 import { graphql } from 'react-apollo';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import { compose, withHandlers } from 'recompose';
 import withLoader from './with-loader';
 import withError from './with-error';
@@ -20,31 +20,30 @@ const Logout = ({ logout }) =>
     </a>
   </li>;
 
-const Header = props => {
-  const { data, logout } = props;
-  return (
-    <nav>
-      <Link to="/">Home</Link>
-      <ul>
-        {data.user ? <Logout logout={logout} /> : <SignLoginButtons />}
-      </ul>
-    </nav>
-  );
-};
+const Header = ({ data, logout }) =>
+  <nav>
+    <Link to="/">Home</Link>
+    <ul>
+      {data.user ? <Logout logout={logout} /> : <SignLoginButtons />}
+    </ul>
+  </nav>;
 
 const enhance = compose(
   graphql(currentUserQuery),
   graphql(logoutMutation),
+  withLoader(({ data }) => data && data.loading),
+  withRouter,
   withHandlers({
-    logout: ({ mutate }) => () => {
+    logout: ({ mutate, history }) => () => {
       // make sure to re-run the query to return current auth status
       // so the data in the header can be properly updated
       mutate({
         refetchQueries: [{ query: currentUserQuery }],
+      }).then(() => {
+        history.push('/');
       });
     },
   }),
-  withLoader(({ data }) => data && data.loading),
   withError(({ error }) => error),
 );
 
