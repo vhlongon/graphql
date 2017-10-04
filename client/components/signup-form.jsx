@@ -1,5 +1,5 @@
 import React from 'react';
-import { compose, withStateHandlers, withHandlers } from 'recompose';
+import { compose, withStateHandlers, withHandlers, lifecycle } from 'recompose';
 import { css } from 'emotion';
 import { graphql } from 'react-apollo';
 import AuthForm from './auth-form';
@@ -43,12 +43,21 @@ const SignupForm = ({ mutate, setError, error, resetError }) =>
 
 export default compose(
   graphql(signupMutation),
+  graphql(currentUserQuery),
   withStateHandlers(({ error = null }) => ({ error }), {
     setError: () => error => ({ error }),
   }),
   withHandlers({
     resetError: ({ setError }) => () => {
       setError(null);
+    },
+  }),
+  lifecycle({
+    componentWillUpdate(nextProps) {
+      const { history, data: { user } } = this.props;
+      if (!user && nextProps.data.user) {
+        history.push('/dashboard');
+      }
     },
   }),
 )(SignupForm);

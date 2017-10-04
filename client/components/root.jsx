@@ -28,6 +28,15 @@ const client = new AppolloClient({
   dataIdFromObject: o => o.id,
 });
 
+const renderDashBoard = onStatusUpdated => props =>
+  <Dashboard {...props} onStatusUpdated={onStatusUpdated} />;
+
+const onStatusUpdated = status =>
+  console.log(
+    `%c Auth Status: ${status}`,
+    'background: white; color: blue; padding: 2px;',
+  );
+
 const Root = () =>
   <ApolloProvider client={client}>
     <Router>
@@ -37,7 +46,10 @@ const Root = () =>
           <Route exact path="/" component={App} />
           <Route path="/login" component={LoginForm} />
           <Route path="/signup" component={SignupForm} />
-          <Route path="/dashboard" component={Dashboard} />
+          <Route
+            path="/dashboard"
+            component={renderDashBoard(onStatusUpdated)}
+          />
         </Switch>
       </div>
     </Router>
